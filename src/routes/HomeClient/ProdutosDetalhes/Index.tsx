@@ -2,10 +2,11 @@ import "./styles.css";
 import BtnAzul from "../../../components/BtnAzul/Index";
 import BtnBranco from "../../../components/BtnBranco/Index";
 import DetalheProduto from "../../../components/DetalheProduto/Index";
-import * as productService from "../../../services/product-services";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ProductDTO } from "../../../models/product";
+import * as productService from "../../../services/product-services";
+import * as cartService from "../../../services/cart-service";
 
 
 
@@ -27,6 +28,13 @@ export default function ProdutosDetalhes() {
 
  } ,[] )
 
+ function handleBuyButton () {
+      if(product ) {
+        cartService.addProduct(product)
+        navigate("/cart")
+      }     
+ }
+
  
   return (
     <main>
@@ -43,7 +51,9 @@ export default function ProdutosDetalhes() {
         )}
 
         <div className="dsc-btn-page-container">
-          <BtnAzul texto="Comprar" />
+          <div onClick={handleBuyButton}>
+            <BtnAzul texto="Comprar" />
+          </div>
           <Link to="/">
             <BtnBranco texto="Início" />
           </Link>
