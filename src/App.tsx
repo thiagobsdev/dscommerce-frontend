@@ -4,6 +4,8 @@ import ProdutosDetalhes from "./routes/HomeClient/ProdutosDetalhes/Index";
 import HomeClient from "./routes/HomeClient/Index";
 import Cart from "./routes/HomeClient/Cart/Index";
 import Login from "./routes/HomeClient/Login/Index";
+import Admin from "./routes/Admin";
+import AdminHome from "./routes/Admin/AdminHome";
 
 function App() {
   return (
@@ -16,6 +18,10 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="cart" element={<Cart />} />
             <Route path="details/:productId" element={<ProdutosDetalhes />} />
+          </Route>
+          <Route path="/admin/" element={<Admin />} >
+            <Route index element={<AdminHome />} />
+
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

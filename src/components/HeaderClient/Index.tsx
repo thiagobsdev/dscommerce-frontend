@@ -17,7 +17,7 @@ export default function HeaderClient() {
               <img src={cartIcon} alt="Carrinho de compras" />
             </div>
           </div>
-          <a href="#">Entrar</a>
+          <Link to="/login">Entrar</Link>
         </div>
       </nav>
     </header>
