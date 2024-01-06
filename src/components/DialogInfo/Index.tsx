@@ -1,12 +1,19 @@
 import BtnAzul from "../BtnAzul/Index";
 import "./styles.css";
 
-export default function DialogInfo() {
+type Props = {
+    message: string,
+    dialogFunction: Function
+}
+
+export default function DialogInfo( {message,dialogFunction}: Props) {
   return (
-    <div className="dsc-dialog-backgroud">
-      <div className="dsc-dialog-box" >
-        <h2>Operação com sucesso</h2>
-        <BtnAzul texto="OK" />
+    <div className="dsc-dialog-backgroud" onClick={ () => dialogFunction()}>
+      <div className="dsc-dialog-box" onClick={ (event) => event.stopPropagation()}>
+        <h2>{message}</h2>
+        <div className="dsc-dialog-btn-container" onClick={ () => dialogFunction()}>
+            <BtnAzul texto="OK" />
+        </div>
       </div>
     </div>
   );

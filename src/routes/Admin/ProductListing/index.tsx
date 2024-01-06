@@ -30,6 +30,11 @@ export default function ProductListing() {
     sort: "name",
   });
 
+  const [dialogInfoData, setDialogInfoData] = useState({
+    message: "Operação com sucesso",
+    visible: false
+  });
+
   useEffect(() => {
     productService
       .findRequestPage(queryParams.page, queryParams.name)
@@ -50,6 +55,14 @@ export default function ProductListing() {
 
   function handleNextPage() {
     setQueryParams({ ...queryParams, page: queryParams.page + 1 });
+  }
+
+  function handleDialogClose () {
+    setDialogInfoData({...dialogInfoData, visible:false})
+  }
+
+  function handleDialogInfoDataTrue () {
+    setDialogInfoData({...dialogInfoData, visible: true})
   }
 
   return (
@@ -96,7 +109,8 @@ export default function ProductListing() {
                     />
                   </td>
                   <td>
-                    <img
+                    <img 
+                      onClick={handleDialogInfoDataTrue}
                       className="dsc-product-listing-btn"
                       src={trashIcon}
                       alt="Deletar"
@@ -114,7 +128,10 @@ export default function ProductListing() {
         )}
       </section>
 
-      <DialogInfo />
+      {
+        dialogInfoData.visible  &&
+        <DialogInfo message={dialogInfoData.message} dialogFunction={handleDialogClose}/>
+      }
     </main>
   );
 }
