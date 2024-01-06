@@ -16,6 +16,7 @@ type QueryParams = {
 };
 
 export default function Catalog() {
+  
   const navigate = useNavigate();
   const [products, setProducts] = useState<ProductDTO[]>([]);
   const [lastPageProducts, setLastPageProducts] = useState(false);

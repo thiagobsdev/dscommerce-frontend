@@ -1,11 +1,55 @@
-import "./styles.css"
+import "./styles.css";
 
-import editIcon from "../../../assets/Edit.svg"
-import trashIcon from "../../../assets/Trash.svg"
-import productIcon from "../../../assets/productIcon.png"
+import editIcon from "../../../assets/Edit.svg";
+import trashIcon from "../../../assets/Trash.svg";
 
+
+import * as productService from "../../../services/product-services";
+import { useEffect, useState } from "react";
+import { ProductDTO } from "../../../models/product";
+import { useNavigate } from "react-router-dom";
+import Pesquisar from "../../../components/Pesquisar/Index";
+import CarregarMais from "../../../components/CarregarMais/Index";
+
+type QueryParams = {
+  page: number;
+  size: number;
+  name: string;
+  sort: string;
+};
 
 export default function ProductListing() {
+  const navigate = useNavigate();
+  const [products, setProducts] = useState<ProductDTO[]>([]);
+  const [lastPageProducts, setLastPageProducts] = useState(false);
+  const [queryParams, setQueryParams] = useState<QueryParams>({
+    page: 0,
+    name: "",
+    size: 12,
+    sort: "name",
+  });
+
+  useEffect(() => {
+    productService
+      .findRequestPage(queryParams.page, queryParams.name)
+      .then((response) => {
+        const nextPage = response.data.content;
+        setLastPageProducts(response.data.last);
+        setProducts(products.concat(nextPage));
+      })
+      .catch(() => {
+        navigate("/");
+      });
+  }, [queryParams]);
+
+  function handleSearch(nameFounded: string) {
+    setProducts([]);
+    setQueryParams({ ...queryParams, page: 0, name: nameFounded });
+  }
+
+  function handleNextPage() {
+    setQueryParams({ ...queryParams, page: queryParams.page + 1 });
+  }
 
   return (
     <main>
@@ -16,11 +60,7 @@ export default function ProductListing() {
           <div className="dsc-btn dsc-btn-white">Novo</div>
         </div>
 
-        <form className="dsc-search-bar">
-          <button type="submit">🔎︎</button>
-          <input type="text" placeholder="Nome do produto" />
-          <button type="reset">🗙</button>
-        </form>
+        <Pesquisar onSearch={handleSearch} />
 
         <table className="dsc-table dsc-mb20 dsc-mt20">
           <thead>
@@ -30,21 +70,47 @@ export default function ProductListing() {
               <th className="dsc-tb768">Preço</th>
               <th className="dsc-txt-left">Nome</th>
               <th></th>
-              <th></th>  
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="dsc-tb576">341</td>
-              <td><img className="dsc-product-listing-image" src={productIcon} alt="Computer"/></td>
-              <td className="dsc-tb768">R$ 5000,00</td>
-              <td className="dsc-txt-left">Computador Gamer XT Plus Ultra</td>
-              <td><img className="dsc-product-listing-btn" src={editIcon} alt="Editar" /></td>
-              <td><img className="dsc-product-listing-btn" src={trashIcon} alt="Deletar"/></td>
-            </tr>
+            {products.map((item) => {
+              return (
+                <tr key={item.id}>
+                  <td className="dsc-tb576">{item.id}</td>
+                  <td>
+                    <img
+                      className="dsc-product-listing-image"
+                      src={item.imgUrl}
+                      alt={item.name}
+                    />
+                  </td>
+                  <td className="dsc-tb768">{`R$ ${item.price}`}</td>
+                  <td className="dsc-txt-left">{item.name}</td>
+                  <td>
+                    <img
+                      className="dsc-product-listing-btn"
+                      src={editIcon}
+                      alt="Editar"
+                    />
+                  </td>
+                  <td>
+                    <img
+                      className="dsc-product-listing-btn"
+                      src={trashIcon}
+                      alt="Deletar"
+                    />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-        <div className="dsc-btn-next-page">Carregar mais</div>
+        {!lastPageProducts && (
+          <div onClick={handleNextPage}>
+            <CarregarMais />
+          </div>
+        )}
       </section>
     </main>
   );
