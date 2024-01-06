@@ -1,7 +1,9 @@
 import "./styles.css";
 
-import homeAdminIcon from "../../assets/home.svg"
-import homeProductsIcon from "../../assets/products.svg"
+import homeAdminIcon from "../../assets/home.svg";
+import homeProductsIcon from "../../assets/products.svg";
+import { LoggedUser } from "../LoggedUser";
+import { NavLink } from "react-router-dom";
 
 export default function HeaderAdmin() {
   return (
@@ -10,19 +12,30 @@ export default function HeaderAdmin() {
         <h1>DSC Admin</h1>
         <div className="dsc-navbar-right">
           <div className="dsc-menu-items-container">
-            <div className="dsc-menu-item">
-              <img src={homeAdminIcon} alt="Início" />
-              <p>Início</p>
-            </div>
-            <div className="dsc-menu-item">
-              <img src={homeProductsIcon} alt="Cadastro de produtos" />
-              <p className="dsc-menu-item-active">Produtos</p>
-            </div>
+            <NavLink
+              to="/admin/home"
+              className={({ isActive }) =>
+                isActive ? "dsc-menu-item-active" : ""
+              }
+            >
+              <div className="dsc-menu-item">
+                <img src={homeAdminIcon} alt="Início" />
+                <p>Início</p>
+              </div>
+            </NavLink>
+            <NavLink 
+            to="/admin/products"
+            className={({ isActive }) =>
+                isActive ? "dsc-menu-item-active" : ""
+              }
+            >
+              <div className="dsc-menu-item">
+                <img src={homeProductsIcon} alt="Cadastro de produtos" />
+                <p>Produtos</p>
+              </div>
+            </NavLink>
           </div>
-          <div className="dsc-logged-user">
-            <p>Maria Silva</p>
-            <a href="#">Sair</a>
-          </div>
+          <LoggedUser />
         </div>
       </nav>
     </header>
