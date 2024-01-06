@@ -10,6 +10,7 @@ import { ProductDTO } from "../../../models/product";
 import { useNavigate } from "react-router-dom";
 import Pesquisar from "../../../components/Pesquisar/Index";
 import CarregarMais from "../../../components/CarregarMais/Index";
+import DialogInfo from "../../../components/DialogInfo/Index";
 
 type QueryParams = {
   page: number;
@@ -112,6 +113,8 @@ export default function ProductListing() {
           </div>
         )}
       </section>
+
+      <DialogInfo />
     </main>
   );
 }
