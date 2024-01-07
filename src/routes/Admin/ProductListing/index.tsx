@@ -3,7 +3,6 @@ import "./styles.css";
 import editIcon from "../../../assets/Edit.svg";
 import trashIcon from "../../../assets/Trash.svg";
 
-
 import * as productService from "../../../services/product-services";
 import { useEffect, useState } from "react";
 import { ProductDTO } from "../../../models/product";
@@ -11,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Pesquisar from "../../../components/Pesquisar/Index";
 import CarregarMais from "../../../components/CarregarMais/Index";
 import DialogInfo from "../../../components/DialogInfo/Index";
+import DialogConfirmation from "../../../components/DialogConfirmation/Index";
 
 type QueryParams = {
   page: number;
@@ -32,7 +32,12 @@ export default function ProductListing() {
 
   const [dialogInfoData, setDialogInfoData] = useState({
     message: "Operação com sucesso",
-    visible: false
+    visible: false,
+  });
+
+  const [dialogConfirmationAnswer, setDialogConfirmationAnswer] = useState({
+    message: "Tem certeza ?",
+    visible: false,
   });
 
   useEffect(() => {
@@ -57,12 +62,17 @@ export default function ProductListing() {
     setQueryParams({ ...queryParams, page: queryParams.page + 1 });
   }
 
-  function handleDialogClose () {
-    setDialogInfoData({...dialogInfoData, visible:false})
+  function handleDialogClose() {
+    setDialogInfoData({ ...dialogInfoData, visible: false });
   }
 
-  function handleDialogInfoDataTrue () {
-    setDialogInfoData({...dialogInfoData, visible: true})
+  function handleConfirmationVisibleTrue() {
+    setDialogConfirmationAnswer({ ...dialogConfirmationAnswer, visible: true });
+  }
+
+  function handleDialogConfirmation (answer: boolean) {
+    setDialogConfirmationAnswer({ ...dialogConfirmationAnswer, visible: answer });
+    console.log(answer)
   }
 
   return (
@@ -109,8 +119,8 @@ export default function ProductListing() {
                     />
                   </td>
                   <td>
-                    <img 
-                      onClick={handleDialogInfoDataTrue}
+                    <img
+                      onClick={handleConfirmationVisibleTrue}
                       className="dsc-product-listing-btn"
                       src={trashIcon}
                       alt="Deletar"
@@ -128,10 +138,19 @@ export default function ProductListing() {
         )}
       </section>
 
-      {
-        dialogInfoData.visible  &&
-        <DialogInfo message={dialogInfoData.message} dialogFunction={handleDialogClose}/>
-      }
+      {dialogInfoData.visible && (
+        <DialogInfo
+          message={dialogInfoData.message}
+          dialogFunction={handleDialogClose}
+        />
+      )}
+
+      {dialogConfirmationAnswer.visible && (
+        <DialogConfirmation
+          message={dialogConfirmationAnswer.message}
+          onDialogConfirmationAnswer={handleDialogConfirmation}
+        />
+      )}
     </main>
   );
 }
