@@ -1,38 +1,55 @@
 import { useContext, useState } from "react";
 import "./styles.css";
-import { CredentialsDTO } from "../../../models/auth";
-import * as authService from "../../../services/auth-service"
+import * as authService from "../../../services/auth-service";
 import { useNavigate } from "react-router-dom";
 import { ContextToken } from "../../../utils/context-token";
 
-
 export default function Login() {
+  const navigate = useNavigate();
+  const { setContextTokenPayload } = useContext(ContextToken);
 
-  const navigate = useNavigate()
-  const {setContextTokenPayload} = useContext(ContextToken)
-
-  const [formData, setFormData] = useState<CredentialsDTO>({
-    username: "",
-    password: "",
+  const [formData, setFormData] = useState<any>({
+    username: {
+      value: "",
+      id: "username",
+      name: "username",
+      type: "text",
+      placeholder: "Email",
+      validation: function (value: string) {
+        return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+          value.toLowerCase()
+        );
+      },
+      message: "Favor informar um email válido",
+    },
+    password: {
+      value: "",
+      id: "password",
+      name: "password",
+      type: "password",
+      placeholder: "Senha",
+    },
   });
 
   function handleFormLogin(event: any) {
     const name = event.target.name;
     const value = event.target.value;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: {...formData[name], value:value}});
   }
 
   function handleLogin(event: any) {
     event.preventDefault();
-    authService.loginRequest(formData)
-        .then( response => {
-          authService.saveAccessToken(response.data.access_token)
-          setContextTokenPayload(authService.getAccessTokenPayload())
-          navigate("/cart")
-        })
-        .catch( error => { 
-          console.log("ERRO NA REQUISIÇÃO", error)
-        })
+    authService
+      .loginRequest({username: formData.username.value, password: formData.password.value} )
+      .then((response) => {
+        authService.saveAccessToken(response.data.access_token);
+        setContextTokenPayload(authService.getAccessTokenPayload());
+        navigate("/cart");
+      })
+      .catch((error) => {
+        console.log("ERRO NA REQUISIÇÃO", error);
+        console.log(formData)
+      });
   }
 
   return (
@@ -46,7 +63,7 @@ export default function Login() {
                 <input
                   className="dsc-form-control"
                   name="username"
-                  value={formData.username}
+                  value={formData.username.value}
                   type="text"
                   placeholder="Email"
                   onChange={handleFormLogin}
@@ -57,7 +74,7 @@ export default function Login() {
                 <input
                   className="dsc-form-control"
                   name="password"
-                  value={formData.password}
+                  value={formData.password.value}
                   type="password"
                   placeholder="Senha"
                   onChange={handleFormLogin}
