@@ -1,13 +1,19 @@
-export function  update(inputs: any, name: string, newValue: any) {
-    return {...inputs, [name]: {...inputs[name], value: newValue}}
+export function update(inputs: any, name: string, newValue: any) {
+  return { ...inputs, [name]: { ...inputs[name], value: newValue } };
 }
 
 export function toValues(inputs: any) {
-    const data:any = {};
+  const data: any = {};
+  for (var name in inputs) {
+    data[name] = inputs[name].value;
+  }
+  return data;
+}
 
-    for( var name in inputs) {
-        data[name] = inputs[name].value;
-    }
-
-    return data;
+export function updateAll(inputs: any, newValues: any) {
+  const newInput: any = {};
+  for (var name in inputs) {
+    newInput[name] = { ...inputs[name], value: newValues[name] };
+  }
+  return newInput;
 }

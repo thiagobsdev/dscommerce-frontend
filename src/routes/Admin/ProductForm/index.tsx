@@ -1,11 +1,26 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import BtnBranco from "../../../components/BtnBranco/Index";
 import "./styles.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormInput from "../../../components/FormInput/Index";
 import * as forms from "../../../utils/forms";
+import * as productService from "../../../services/product-services"
 
 export default function ProductForm() {
+
+  const params = useParams();
+
+  const isEditing = params.productId !== "create";
+
+  useEffect(()=> {
+    if( isEditing) {
+      productService.findById(Number(params.productId))
+        .then( response => {
+            setFormData(forms.updateAll(formData, response.data))
+        })
+    }
+  },[] )
+
   const [formData, setFormData] = useState<any>({
     name: {
       value: "",
