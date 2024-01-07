@@ -3,6 +3,7 @@ import "./styles.css";
 import * as authService from "../../../services/auth-service";
 import { useNavigate } from "react-router-dom";
 import { ContextToken } from "../../../utils/context-token";
+import FormInput from "../../../components/FormInput/Index";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -60,23 +61,18 @@ export default function Login() {
             <h2>Login</h2>
             <div className="dsc-form-controls-container">
               <div>
-                <input
-                  className="dsc-form-control"
-                  name="username"
-                  value={formData.username.value}
-                  type="text"
+                <FormInput
+                  {...formData.username}
                   placeholder="Email"
+                  className="dsc-form-control"
                   onChange={handleFormLogin}
                 />
                 <div className="dsc-form-error"></div>
               </div>
               <div>
-                <input
+                <FormInput
+                   {...formData.password}
                   className="dsc-form-control"
-                  name="password"
-                  value={formData.password.value}
-                  type="password"
-                  placeholder="Senha"
                   onChange={handleFormLogin}
                 />
               </div>
