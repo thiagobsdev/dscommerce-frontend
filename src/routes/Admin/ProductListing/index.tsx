@@ -12,6 +12,7 @@ import CarregarMais from "../../../components/CarregarMais/Index";
 import DialogInfo from "../../../components/DialogInfo/Index";
 import DialogConfirmation from "../../../components/DialogConfirmation/Index";
 
+
 type QueryParams = {
   page: number;
   size: number;
@@ -38,6 +39,7 @@ export default function ProductListing() {
   const [dialogConfirmationAnswer, setDialogConfirmationAnswer] = useState({
     message: "Tem certeza ?",
     visible: false,
+    id: 0,
   });
 
   useEffect(() => {
@@ -66,13 +68,32 @@ export default function ProductListing() {
     setDialogInfoData({ ...dialogInfoData, visible: false });
   }
 
-  function handleConfirmationVisibleTrue() {
-    setDialogConfirmationAnswer({ ...dialogConfirmationAnswer, visible: true });
+  function handleConfirmationVisibleTrue(productId: number) {
+    setDialogConfirmationAnswer({
+      ...dialogConfirmationAnswer,
+      id: productId,
+      visible: true,
+    });
   }
 
-  function handleDialogConfirmation (answer: boolean) {
-    setDialogConfirmationAnswer({ ...dialogConfirmationAnswer, visible: answer });
-    console.log(answer)
+  function handleDialogConfirmation(answer: boolean, productId: number) {
+    if (answer) {
+      productService.deleteById(productId).then(() => {
+        setProducts([]);
+        setQueryParams({ ...queryParams, page: 0 });
+      })
+      .catch( error => {
+        setDialogInfoData( {
+          visible: true,
+          message: error.response.data.error
+        })
+      })
+    }
+
+    setDialogConfirmationAnswer({
+      ...dialogConfirmationAnswer,
+      visible: false,
+    });
   }
 
   return (
@@ -120,7 +141,7 @@ export default function ProductListing() {
                   </td>
                   <td>
                     <img
-                      onClick={handleConfirmationVisibleTrue}
+                      onClick={() => handleConfirmationVisibleTrue(item.id)}
                       className="dsc-product-listing-btn"
                       src={trashIcon}
                       alt="Deletar"
@@ -147,6 +168,7 @@ export default function ProductListing() {
 
       {dialogConfirmationAnswer.visible && (
         <DialogConfirmation
+          id={dialogConfirmationAnswer.id}
           message={dialogConfirmationAnswer.message}
           onDialogConfirmationAnswer={handleDialogConfirmation}
         />

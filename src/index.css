@@ -384,3 +384,9 @@ nav a {
   grid-gap: 20px;
   grid-template-columns: 1fr 1fr;
 }
+
+
+.dsc-dialog-btn {
+  width: 100%;
+
+}

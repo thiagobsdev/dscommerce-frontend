@@ -22,3 +22,12 @@ export function findById(id: number) {
     return requestBackEnd({url: `/products/${id}`})
 }
 
+export function deleteById(id: number) {
+    const axiosConfig:AxiosRequestConfig = {
+        method: "DELETE",
+        url: `/products/${id}`,
+        withCredentials: true
+     }
+
+     return requestBackEnd(axiosConfig)
+}
