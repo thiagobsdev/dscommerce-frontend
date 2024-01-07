@@ -1,6 +1,41 @@
+import { Link } from "react-router-dom";
+import BtnBranco from "../../../components/BtnBranco/Index";
 import "./styles.css";
+import { useState } from "react";
+import FormInput from "../../../components/FormInput/Index";
+import * as forms from "../../../utils/forms";
 
 export default function ProductForm() {
+  const [formData, setFormData] = useState<any>({
+    name: {
+      value: "",
+      id: "name",
+      name: "name",
+      type: "text",
+      placeholder: "Nome do produto",
+    },
+    price: {
+      value: "",
+      id: "price",
+      name: "price",
+      type: "number",
+      placeholder: "Preço do produto",
+    },
+    imgUrl: {
+      value: "",
+      id: "imgUrl",
+      name: "imgUrl",
+      type: "text",
+      placeholder: "Imagem do produto",
+    },
+  });
+
+  function handleChangeInput(event: any) {
+    const name = event.target.name;
+    const value = event.target.value;
+    setFormData(forms.update(formData, name, value));
+  }
+
   return (
     <main>
       <section id="product-form-section" className="dsc-container">
@@ -9,47 +44,32 @@ export default function ProductForm() {
             <h2>Dados do produto</h2>
             <div className="dsc-form-controls-container">
               <div>
-                <input
+                <FormInput
+                  {...formData.name}
                   className="dsc-form-control"
-                  type="text"
-                  placeholder="Nome"
+                  onChange={handleChangeInput}
                 />
               </div>
               <div>
-                <input
+                <FormInput
+                  {...formData.price}
                   className="dsc-form-control"
-                  type="text"
-                  placeholder="Preço"
+                  onChange={handleChangeInput}
                 />
               </div>
               <div>
-                <input
+                <FormInput
+                  {...formData.imgUrl}
                   className="dsc-form-control"
-                  type="text"
-                  placeholder="Imagem"
+                  onChange={handleChangeInput}
                 />
-              </div>
-              <div>
-                <select className="dsc-form-control dsc-select" required>
-                  <option value="" disabled selected>
-                    Categorias
-                  </option>
-                  <option value="1">Valor 1</option>
-                  <option value="2">Valor 2</option>
-                </select>
-              </div>
-              <div>
-                <textarea
-                  className="dsc-form-control dsc-textarea"
-                  placeholder="Descrição"
-                ></textarea>
               </div>
             </div>
 
             <div className="dsc-product-form-buttons">
-              <button type="reset" className="dsc-btn dsc-btn-white">
-                Cancelar
-              </button>
+              <Link to={"/admin/products"}>
+                <BtnBranco texto="Cancelar" />
+              </Link>
               <button type="submit" className="dsc-btn dsc-btn-blue">
                 Salvar
               </button>
