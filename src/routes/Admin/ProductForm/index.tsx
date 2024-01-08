@@ -30,11 +30,15 @@ export default function ProductForm() {
       placeholder: "Nome do produto",
     },
     price: {
-      value: "",
+      value: 0,
       id: "price",
       name: "price",
       type: "number",
       placeholder: "Preço do produto",
+      validation: function( valorValidado: any) {
+        return Number(valorValidado) > 0;
+      },
+      message: "Favor informar um valor positivo"
     },
     imgUrl: {
       value: "",
@@ -44,6 +48,10 @@ export default function ProductForm() {
       placeholder: "Imagem do produto",
     },
   });
+
+
+  const obj = forms.validate(formData, "price")
+  console.log(obj)
 
   function handleChangeInput(event: any) {
     const name = event.target.name;
