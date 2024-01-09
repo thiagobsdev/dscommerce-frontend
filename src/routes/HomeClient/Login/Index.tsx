@@ -33,10 +33,14 @@ export default function Login() {
     },
   });
 
-  function handleFormLogin(event: any) {
-    const name = event.target.name;
-    const value = event.target.value;
-    setFormData(forms.update(formData, name,value));
+  function handleChangeInput(event: any) {
+    const result = forms.updateAndValidate(formData, event.target.name, event.target.value )
+    setFormData(result);
+  }
+
+  function handleTurnDirty (name: string) {
+      const newFormData = forms.dirtyAndValidate(formData, name);
+      setFormData(newFormData);
   }
 
   function handleLogin(event: any) {
@@ -66,7 +70,8 @@ export default function Login() {
                   {...formData.username}
                   placeholder="Email"
                   className="dsc-form-control"
-                  onChange={handleFormLogin}
+                  onTurnDirty={handleTurnDirty}
+                  onChange={handleChangeInput}
                 />
                 <div className="dsc-form-error"></div>
               </div>
@@ -74,7 +79,8 @@ export default function Login() {
                 <FormInput
                    {...formData.password}
                   className="dsc-form-control"
-                  onChange={handleFormLogin}
+                  onTurnDirty={handleTurnDirty}
+                  onChange={handleChangeInput}
                 />
               </div>
             </div>
