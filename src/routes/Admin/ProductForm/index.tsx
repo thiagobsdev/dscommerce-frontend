@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import FormInput from "../../../components/FormInput/Index";
 import * as forms from "../../../utils/forms";
 import * as productService from "../../../services/product-services";
+import FormTextArea from "../../../components/FormTextArea/Index";
 
 export default function ProductForm() {
   const params = useParams();
@@ -27,7 +28,7 @@ export default function ProductForm() {
       type: "text",
       placeholder: "Nome do produto",
       validation: function(tamanhoNome: string ) {
-        return  /^.{6,7}$/.test(tamanhoNome)
+        return  /^.{3,80}$/.test(tamanhoNome)
       },
       message: "Favor informar um nome de produto de 03 à 80 caracteres"
     },
@@ -49,6 +50,17 @@ export default function ProductForm() {
       type: "text",
       placeholder: "Imagem do produto",
     },
+    description: {
+      value: "",
+      id: "description",
+      name: "description",
+      type: "text",
+      placeholder: "Descrição",
+      validation: function(tamanhoNome: string ) {
+        return  /^.{10,}$/.test(tamanhoNome)
+      },
+      message: "A descrição deve ter no minimo dez caracteres"
+    }
   });
 
   function handleChangeInput(event: any) {
@@ -93,6 +105,15 @@ export default function ProductForm() {
                   className="dsc-form-control"
                   onChange={handleChangeInput}
                 />
+              </div>
+              <div>
+                <FormTextArea
+                  {...formData.description}
+                  onTurnDirty={handleTurnDirty}
+                  className="dsc-form-control"
+                  onChange={handleChangeInput}
+                />
+                <div className="dsc-form-error dsc-textarea">{formData.description.message}</div>
               </div>
             </div>
 
