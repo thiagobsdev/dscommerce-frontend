@@ -26,6 +26,10 @@ export default function ProductForm() {
       name: "name",
       type: "text",
       placeholder: "Nome do produto",
+      validation: function(tamanhoNome: string ) {
+        return  /^.{6,7}$/.test(tamanhoNome)
+      },
+      message: "Favor informar um nome de produto de 03 à 80 caracteres"
     },
     price: {
       value: "",
