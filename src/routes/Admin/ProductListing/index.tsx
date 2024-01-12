@@ -102,6 +102,10 @@ export default function ProductListing() {
     navigate("/admin/products/create")
   }
 
+  function handleUpdateClick(productId: number ) {
+    navigate(`/admin/products/${productId}`)
+  }
+
   return (
     <main>
       <section id="product-listing-section" className="dsc-container">
@@ -142,6 +146,7 @@ export default function ProductListing() {
                   <td className="dsc-txt-left">{item.name}</td>
                   <td>
                     <img
+                      onClick={() => handleUpdateClick(item.id)}
                       className="dsc-product-listing-btn"
                       src={editIcon}
                       alt="Editar"

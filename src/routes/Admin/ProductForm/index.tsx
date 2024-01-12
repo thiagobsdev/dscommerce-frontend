@@ -96,11 +96,23 @@ export default function ProductForm() {
       setFormData(newFormData);
   }
 
+  function handleSubmit ( event:any) {
+    event.preventDefault();
+    
+    const formDataValidated = forms.dirtyAndValidadeAll(formData);
+    if( forms.hasAnyInvalid(formDataValidated)) {
+      setFormData(formDataValidated)
+      console.log("entrou aqui")
+      return;
+    }
+
+  }
+
   return (
     <main>
       <section id="product-form-section" className="dsc-container">
         <div className="dsc-product-form-container">
-          <form className="dsc-card dsc-form">
+          <form className="dsc-card dsc-form" onSubmit={handleSubmit}>
             <h2>Dados do produto</h2>
             <div className="dsc-form-controls-container">
               <div>
@@ -144,13 +156,13 @@ export default function ProductForm() {
                  getOptionLabel={(obj: any)=> obj.name}
                  getOptionValue={(obj: any)=> String(obj.id)}
                    />
-                <div className="dsc-form-error dsc-textarea">{formData.categories.message}</div>
+                <div className="dsc-form-error ">{formData.categories.message}</div>
               </div>
               <div>
                 <FormTextArea
                   {...formData.description}
                   onTurnDirty={handleTurnDirty}
-                  className="dsc-form-control"
+                  className="dsc-form-control dsc-textarea"
                   onChange={handleChangeInput}
                 />
                 <div className="dsc-form-error dsc-textarea">{formData.description.message}</div>

@@ -248,6 +248,7 @@ nav a {
   resize: none;
   height: 128px;
   padding-top: 10px;
+  
 }
 
 @media (min-width: 576px) {
