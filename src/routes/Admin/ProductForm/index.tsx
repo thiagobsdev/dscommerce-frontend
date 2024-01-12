@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import BtnBranco from "../../../components/BtnBranco/Index";
 import "./styles.css";
 import { useEffect, useState } from "react";
@@ -16,14 +16,15 @@ export default function ProductForm() {
 
   const isEditing = params.productId !== "create";
 
-  const [ categories, setCategories] = useState<CategoriesDTO[]>([])
+  const navigate = useNavigate();
 
-  useEffect( ()=> {
-    categorieService.findAllRequest() 
-      .then(response =>{
-        setCategories(response.data)
-      })
-  },[])
+  const [categories, setCategories] = useState<CategoriesDTO[]>([]);
+
+  useEffect(() => {
+    categorieService.findAllRequest().then((response) => {
+      setCategories(response.data);
+    });
+  }, []);
 
   useEffect(() => {
     if (isEditing) {
@@ -40,10 +41,10 @@ export default function ProductForm() {
       name: "name",
       type: "text",
       placeholder: "Nome do produto",
-      validation: function(tamanhoNome: string ) {
-        return  /^.{3,80}$/.test(tamanhoNome)
+      validation: function (tamanhoNome: string) {
+        return /^.{3,80}$/.test(tamanhoNome);
       },
-      message: "Favor informar um nome de produto de 03 à 80 caracteres"
+      message: "Favor informar um nome de produto de 03 à 80 caracteres",
     },
     price: {
       value: "",
@@ -69,43 +70,60 @@ export default function ProductForm() {
       name: "description",
       type: "text",
       placeholder: "Descrição",
-      validation: function(tamanhoNome: string ) {
-        return  /^.{10,}$/.test(tamanhoNome)
+      validation: function (tamanhoNome: string) {
+        return /^.{10,}$/.test(tamanhoNome);
       },
-      message: "A descrição deve ter no minimo dez caracteres"
+      message: "A descrição deve ter no minimo dez caracteres",
     },
     categories: {
       value: [],
       id: "categories",
       name: "categories",
       placeholder: "Categorias",
-      validation: function(value : CategoriesDTO[] ){
+      validation: function (value: CategoriesDTO[]) {
         return value.length > 0;
       },
-      message: "Selecione ao menos uma categoria"
-    }
+      message: "Selecione ao menos uma categoria",
+    },
   });
 
   function handleChangeInput(event: any) {
-    const result = forms.updateAndValidate(formData, event.target.name, event.target.value )
+    const result = forms.updateAndValidate(
+      formData,
+      event.target.name,
+      event.target.value
+    );
     setFormData(result);
   }
 
-  function handleTurnDirty (name: string) {
-      const newFormData = forms.dirtyAndValidate(formData, name);
-      setFormData(newFormData);
+  function handleTurnDirty(name: string) {
+    const newFormData = forms.dirtyAndValidate(formData, name);
+    setFormData(newFormData);
   }
 
-  function handleSubmit ( event:any) {
+  function handleSubmit(event: any) {
     event.preventDefault();
-    
+
     const formDataValidated = forms.dirtyAndValidadeAll(formData);
-    if( forms.hasAnyInvalid(formDataValidated)) {
-      setFormData(formDataValidated)
-      console.log("entrou aqui")
+    if (forms.hasAnyInvalid(formDataValidated)) {
+      setFormData(formDataValidated);
+      console.log("entrou aqui");
       return;
     }
 
+    const requestBody = forms.toValues(formData);
+
+    if (isEditing) {
+      requestBody.id = params.productId;
+    }
+
+    const request = isEditing
+      ? productService.updateRequest(requestBody)
+      : productService.insertRequest(requestBody);
+      
+    request.then(() => {
+      navigate("/admin/products");
+    });
   }
 
   return (
@@ -131,7 +149,7 @@ export default function ProductForm() {
                   className="dsc-form-control"
                   onChange={handleChangeInput}
                 />
-                 <div className="dsc-form-error">{formData.price.message}</div>
+                <div className="dsc-form-error">{formData.price.message}</div>
               </div>
               <div>
                 <FormInput
@@ -143,20 +161,26 @@ export default function ProductForm() {
               </div>
               <div>
                 <FormSelect
-                 {...formData.categories}
-                 className="dsc-form-control dsc-select-conteiner"
-                 options={categories}
-                 styles = {selectStyles}
-                 onTurnDirty={handleTurnDirty}
-                 isMulti
-                 onChange={(obj: any) => {
-                  const newFormData = forms.updateAndValidate(formData, "categories", obj);
-                  setFormData(newFormData)
-                 }}
-                 getOptionLabel={(obj: any)=> obj.name}
-                 getOptionValue={(obj: any)=> String(obj.id)}
-                   />
-                <div className="dsc-form-error ">{formData.categories.message}</div>
+                  {...formData.categories}
+                  className="dsc-form-control dsc-select-conteiner"
+                  options={categories}
+                  styles={selectStyles}
+                  onTurnDirty={handleTurnDirty}
+                  isMulti
+                  onChange={(obj: any) => {
+                    const newFormData = forms.updateAndValidate(
+                      formData,
+                      "categories",
+                      obj
+                    );
+                    setFormData(newFormData);
+                  }}
+                  getOptionLabel={(obj: any) => obj.name}
+                  getOptionValue={(obj: any) => String(obj.id)}
+                />
+                <div className="dsc-form-error ">
+                  {formData.categories.message}
+                </div>
               </div>
               <div>
                 <FormTextArea
@@ -165,7 +189,9 @@ export default function ProductForm() {
                   className="dsc-form-control dsc-textarea"
                   onChange={handleChangeInput}
                 />
-                <div className="dsc-form-error dsc-textarea">{formData.description.message}</div>
+                <div className="dsc-form-error dsc-textarea">
+                  {formData.description.message}
+                </div>
               </div>
             </div>
 
