@@ -106,9 +106,8 @@ export default function ProductForm() {
 
     const formDataValidated = forms.dirtyAndValidadeAll(formData);
     if (forms.hasAnyInvalid(formDataValidated)) {
-      setFormData(formDataValidated);
-      console.log("entrou aqui");
-      return;
+      //setFormData(formDataValidated);
+      //return;
     }
 
     const requestBody = forms.toValues(formData);
@@ -120,9 +119,13 @@ export default function ProductForm() {
     const request = isEditing
       ? productService.updateRequest(requestBody)
       : productService.insertRequest(requestBody);
-      
+
     request.then(() => {
       navigate("/admin/products");
+    })
+    .catch( error => {
+      const newInputs = forms.setBackendErrors(formData, error.response.data.errors)
+      setFormData(newInputs)
     });
   }
 
