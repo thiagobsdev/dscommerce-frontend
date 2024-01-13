@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 
 
+window.React = React
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
