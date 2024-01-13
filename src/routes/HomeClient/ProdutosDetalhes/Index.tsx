@@ -3,15 +3,18 @@ import BtnAzul from "../../../components/BtnAzul/Index";
 import BtnBranco from "../../../components/BtnBranco/Index";
 import DetalheProduto from "../../../components/DetalheProduto/Index";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ProductDTO } from "../../../models/product";
 import * as productService from "../../../services/product-services";
 import * as cartService from "../../../services/cart-service";
+import { ContextCartCount } from "../../../utils/context-cart";
 
 
 
 export default function ProdutosDetalhes() {
   let params = useParams();
+
+  const {setContextCartCount} = useContext(ContextCartCount);
 
   const navigate = useNavigate();
 
@@ -31,6 +34,7 @@ export default function ProdutosDetalhes() {
  function handleBuyButton () {
       if(product ) {
         cartService.addProduct(product)
+        setContextCartCount(cartService.getCart().items.length)  
         navigate("/cart")
       }     
  }

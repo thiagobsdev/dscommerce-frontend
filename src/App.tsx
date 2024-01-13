@@ -15,10 +15,13 @@ import { ContextToken } from "./utils/context-token";
 import * as authService from "./services/auth-service"
 import ProductListing from "./routes/Admin/ProductListing";
 import ProductForm from "./routes/Admin/ProductForm";
+import { ContextCartCount } from "./utils/context-cart";
 
 function App() {
   const [contextTokenPayload, setContextTokenPayload] =
     useState<AccessTokenPayloadDTO>();
+
+    const [contextCartCount, setContextCartCount] = useState<number>(0)
 
     useEffect(() => {
       if (authService.isAuthenticated()) {
@@ -32,6 +35,7 @@ function App() {
       <ContextToken.Provider
         value={{ contextTokenPayload, setContextTokenPayload }}
       >
+      <ContextCartCount.Provider value={{contextCartCount, setContextCartCount}} >  
         <HistoryRouter history={history}>
           <Routes>
             <Route path="/" element={<HomeClient />}>
@@ -57,6 +61,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </HistoryRouter>
+      </ContextCartCount.Provider>  
       </ContextToken.Provider>
     </>
   );

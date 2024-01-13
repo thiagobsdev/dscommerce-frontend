@@ -1,15 +1,15 @@
 import "./styles.css";
-import cartIcon from "../../assets/cart.svg";
+
 import { Link } from "react-router-dom";
-import * as authService from "../../services/auth-service"
+import * as authService from "../../services/auth-service";
 import iconAdmin from "../../assets/adminIcon.svg";
 import { useContext } from "react";
 import { ContextToken } from "../../utils/context-token";
 import { LoggedUser } from "../LoggedUser";
+import CartIcon from "../CartIcon/Index";
 
 export default function HeaderClient() {
-
-const {contextTokenPayload} = useContext(ContextToken)
+  const { contextTokenPayload } = useContext(ContextToken);
 
   return (
     <header className="dsc-header-client">
@@ -19,9 +19,7 @@ const {contextTokenPayload} = useContext(ContextToken)
         </Link>
         <div className="dsc-navbar-right">
           <div className="dsc-menu-items-container">
-            {
-            contextTokenPayload &&
-            authService.hasAnyRoles(["ROLE_ADMIN"]) && (
+            {contextTokenPayload && authService.hasAnyRoles(["ROLE_ADMIN"]) && (
               <Link to="/admin">
                 <div className="dsc-menu-item">
                   <img src={iconAdmin} alt="Admin" />
@@ -29,7 +27,9 @@ const {contextTokenPayload} = useContext(ContextToken)
               </Link>
             )}
             <div className="dsc-menu-item">
-              <img src={cartIcon} alt="Carrinho de compras" />
+              <Link to="/cart">
+                <CartIcon />
+              </Link>
             </div>
           </div>
           <LoggedUser />
