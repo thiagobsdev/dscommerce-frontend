@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import "./styles.css";
 import * as authService from "../../../services/auth-service";
-import * as forms from "../../../utils/forms"
+import * as forms from "../../../utils/forms";
 import { useNavigate } from "react-router-dom";
 import { ContextToken } from "../../../utils/context-token";
 import FormInput from "../../../components/FormInput/Index";
@@ -9,6 +9,7 @@ import FormInput from "../../../components/FormInput/Index";
 export default function Login() {
   const navigate = useNavigate();
   const { setContextTokenPayload } = useContext(ContextToken);
+  const [submitFormFail, setSubmitFormFail] = useState(false);
 
   const [formData, setFormData] = useState<any>({
     username: {
@@ -34,17 +35,30 @@ export default function Login() {
   });
 
   function handleChangeInput(event: any) {
-    const result = forms.updateAndValidate(formData, event.target.name, event.target.value )
+    const result = forms.updateAndValidate(
+      formData,
+      event.target.name,
+      event.target.value
+    );
     setFormData(result);
   }
 
-  function handleTurnDirty (name: string) {
-      const newFormData = forms.dirtyAndValidate(formData, name);
-      setFormData(newFormData);
+  function handleTurnDirty(name: string) {
+    const newFormData = forms.dirtyAndValidate(formData, name);
+    setFormData(newFormData);
   }
 
   function handleLogin(event: any) {
     event.preventDefault();
+
+    setSubmitFormFail(false);
+
+    const formDataValidated = forms.dirtyAndValidadeAll(formData);
+    if (forms.hasAnyInvalid(formDataValidated)) {
+      setFormData(formDataValidated);
+      return;
+    }
+
     authService
       .loginRequest(forms.toValues(formData))
       .then((response) => {
@@ -52,9 +66,8 @@ export default function Login() {
         setContextTokenPayload(authService.getAccessTokenPayload());
         navigate("/cart");
       })
-      .catch((error) => {
-        console.log("ERRO NA REQUISIÇÃO", error);
-        console.log(formData)
+      .catch(() => {
+        setSubmitFormFail(true);
       });
   }
 
@@ -73,17 +86,24 @@ export default function Login() {
                   onTurnDirty={handleTurnDirty}
                   onChange={handleChangeInput}
                 />
-                <div className="dsc-form-error">{formData.username.message}</div>
+                <div className="dsc-form-error">
+                  {formData.username.message}
+                </div>
               </div>
               <div>
                 <FormInput
-                   {...formData.password}
+                  {...formData.password}
                   className="dsc-form-control"
                   onTurnDirty={handleTurnDirty}
                   onChange={handleChangeInput}
                 />
               </div>
             </div>
+            {submitFormFail && (
+              <div className="dsc-form-global-error">
+                Usuário ou senha inválidos
+              </div>
+            )}
 
             <div className="dsc-login-form-buttons dsc-mt20">
               <button type="submit" className="dsc-btn dsc-btn-blue">

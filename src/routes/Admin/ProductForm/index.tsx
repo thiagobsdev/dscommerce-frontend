@@ -106,8 +106,8 @@ export default function ProductForm() {
 
     const formDataValidated = forms.dirtyAndValidadeAll(formData);
     if (forms.hasAnyInvalid(formDataValidated)) {
-      //setFormData(formDataValidated);
-      //return;
+      setFormData(formDataValidated);
+      return;
     }
 
     const requestBody = forms.toValues(formData);
